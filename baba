@@ -2065,4 +2065,66 @@ $row = mysqli_fetch_assoc($query);
 </body>
 </html>
 
+employee search
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Search</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Search Employee</h2>
+    <form action="search.php" method="post">
+        <input type="text" name="emp_name" placeholder="Enter employee name" required>
+        <input type="submit" value="Search">
+    </form>
+</div>
+
+</body>
+</html>
+style.css
+body {
+    font-family: Arial;
+    background-color: #f0f2f5;
+    text-align: center;
+    padding: 50px;
+}
+
+.container {
+    background: white;
+    width: 400px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+}
+
+input[type="text"],
+input[type="submit"] {
+    padding: 10px;
+    width: 90%;
+    margin: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+search.php
+<?php
+$employees = array(
+    "Alice", "Bob", "Charlie", "David", "Eva",
+    "Farah", "George", "Helen", "Ishaan", "Jaya",
+    "Karan", "Lina", "Mohan", "Nina", "Omkar",
+    "Pooja", "Qadir", "Ravi", "Simran", "Tina"
+);
+
+$name = $_POST["emp_name"];
+
+if (in_array($name, $employees)) {
+    echo "<h3>$name is FOUND in the employee list.</h3>";
+} else {
+    echo "<h3>$name is NOT FOUND in the employee list.</h3>";
+}
+?>
 
