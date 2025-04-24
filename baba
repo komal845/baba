@@ -662,5 +662,124 @@ gmail_validation submitlevel
 </body>
 </html>
 
+jsfunctions event handler
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Handlers in JavaScript</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin: 10px;
+        }
+
+        form input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        div {
+            transition: background-color 0.3s ease;
+            margin: 0 auto;
+            width: 250px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>JavaScript Event Handler Demo</h2>
+
+    <!-- Button Click Event -->
+    <button onclick="sayHello()">Click Me</button><br><br>
+
+    <!-- Mouse Over Event -->
+    <div onmouseover="changeColor(this)" onmouseout="resetColor(this)" style="width: 200px; padding: 20px; background-color: lightgray;">
+        Hover over me
+    </div><br>
+
+    <!-- Input Focus Event -->
+    <input type="text" id="nameField" placeholder="Focus me" onfocus="highlight(this)" onblur="removeHighlight(this)"><br><br>
+
+    <!-- Form Submit Event -->
+    <form onsubmit="return submitForm()">
+        <input type="text" placeholder="Type something" id="inputField">
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        // Button click event
+        function sayHello() {
+            alert("Hello! You clicked the button.");
+        }
+
+        // Mouse over and out events
+        function changeColor(element) {
+            element.style.backgroundColor = "orange";
+        }
+
+        function resetColor(element) {
+            element.style.backgroundColor = "lightgray";
+        }
+
+        // Focus and blur events
+        function highlight(field) {
+            field.style.backgroundColor = "#e0ffff";
+        }
+
+        function removeHighlight(field) {
+            field.style.backgroundColor = "white";
+        }
+
+        // Form submission event
+        function submitForm() {
+            let input = document.getElementById("inputField").value;
+            alert("You submitted: " + input);
+            return false; // Prevent actual form submission
+        }
+    </script>
+
+</body>
+</html>
 
 
