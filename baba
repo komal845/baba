@@ -3892,6 +3892,381 @@ a[href="cart.php"]:hover {
   background-color: #1e4d5a;
 }
 
+facebook website system
+
+comment.php
+<?php
+session_start();
+include 'config.php';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
+    $comment = $_POST['comment'];
+    $post_id = $_POST['post_id'];
+    $user_id = $_SESSION['user_id'];
+
+    $stmt = $pdo->prepare("INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)");
+    $stmt->execute([$post_id, $user_id, $comment]);
+
+    header("Location: home.php");
+}
+?>
+
+config.php
+<?php
+$conn = new mysqli("localhost", "root", "", "facebook_clone");
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+create_post.php
+<?php
+session_start();
+include 'config.php';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
+    $content = $_POST['content'];
+    $user_id = $_SESSION['user_id'];
+    
+    $stmt = $pdo->prepare("INSERT INTO posts (user_id, content) VALUES (?, ?)");
+    $stmt->execute([$user_id, $content]);
+    
+    header("Location: home.php");
+}
+?>
+home.php
+
+<?php
+session_start();
+include 'config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+$stmt = $pdo->prepare("SELECT * FROM posts WHERE user_id = ?");
+$stmt->execute([$user_id]);
+$posts = $stmt->fetchAll();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Facebook Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Facebook Clone</h1>
+</header>
+
+<div class="container">
+    <div class="post-form">
+        <form action="create_post.php" method="post">
+            <textarea name="content" placeholder="What's on your mind?" rows="4" required></textarea><br>
+            <button type="submit">Post</button>
+        </form>
+    </div>
+
+    <div class="posts">
+        <?php foreach ($posts as $post) { ?>
+            <div class="post">
+                <div class="content"><?php echo htmlspecialchars($post['content']); ?></div>
+                <div class="comments">
+                    <strong>Comments:</strong>
+                    <?php
+                    $post_id = $post['id'];
+                    $stmt = $pdo->prepare("SELECT * FROM comments WHERE post_id = ?");
+                    $stmt->execute([$post_id]);
+                    $comments = $stmt->fetchAll();
+                    foreach ($comments as $comment) {
+                        echo '<div class="comment">' . htmlspecialchars($comment['comment']) . '</div>';
+                    }
+                    ?>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+
+</body>
+</html>
+
+login.php
+<?php
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    include 'config.php';
+    
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        header("Location: home.php");
+    } else {
+        echo "Invalid credentials!";
+    }
+}
+?>
+
+<form action="login.php" method="post">
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <button type="submit">Login</button>
+</form>
+
+register.php
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    include 'config.php';
+    
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);  // Hash password
+    
+    $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+    $stmt->execute([$username, $email, $password]);
+    
+    echo "Registration successful!";
+}
+?>
+
+<form action="register.php" method="post">
+    <input type="text" name="username" placeholder="Username" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <button type="submit">Register</button>
+</form>
+
+style.css
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f2f5;
+  color: #444;
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(45deg, #3b5998, #8b9dc3);
+  padding: 20px;
+  text-align: center;
+  color: white;
+  border-bottom: 5px solid #2d4373;
+}
+
+header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+/* Button Styles */
+button {
+  background-color: #3b5998;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2d4373;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Form Input Styles */
+input[type="text"], input[type="email"], input[type="password"], textarea {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: border 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, textarea:focus {
+  border-color: #3b5998;
+  outline: none;
+}
+
+/* Post Styles */
+.post {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.post .content {
+  font-size: 1.2rem;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.post .timestamp {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.post .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post .actions button {
+  background: transparent;
+  color: #3b5998;
+  border: 1px solid #3b5998;
+  font-size: 0.9rem;
+  padding: 8px 15px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.post .actions button:hover {
+  background-color: #3b5998;
+  color: white;
+}
+
+/* Comments Section */
+.comments {
+  margin-top: 20px;
+}
+
+.comment {
+  background-color: #f1f2f6;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.comment:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.comment .author {
+  font-weight: 600;
+  color: #3b5998;
+}
+
+.comment .content {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Profile Picture Styles */
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.post-form {
+  background-color: #fff;
+  padding: 25px;
+  margin-bottom: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.post-form textarea {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  resize: none;
+  transition: border 0.3s ease;
+}
+
+.post-form textarea:focus {
+  border-color: #3b5998;
+  outline: none;
+}
+
+.post-form button {
+  margin-top: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+      padding: 0 10px;
+  }
+
+  header h1 {
+      font-size: 2rem;
+  }
+
+  .post-form textarea {
+      font-size: 0.9rem;
+  }
+
+  .post {
+      padding: 15px;
+  }
+
+  .post .content {
+      font-size: 1rem;
+  }
+}
+
+
+
 
 
 
