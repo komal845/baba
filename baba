@@ -1818,3 +1818,251 @@ body {
     transform: scale(1.03);
 }
 
+cookie 2
+conn.php
+<?php
+$conn = new mysqli("localhost", "root", "", "cookie");
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+?>
+index.php
+<?php
+    session_start();
+    include('conn.php');
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Using Cookie with Logout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background: #007BFF;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+        .message {
+            margin-top: 10px;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login Form</h2>
+        <form method="POST" action="login.php">
+            <label>Username:</label>
+            <input type="text" name="username" value="<?php if (isset($_COOKIE["user"])) { echo $_COOKIE["user"]; } ?>">
+            
+            <label>Password:</label>
+            <input type="password" name="password" value="<?php if (isset($_COOKIE["pass"])) { echo $_COOKIE["pass"]; } ?>">
+
+            <div class="remember-me">
+                <input type="checkbox" name="remember" <?php if (isset($_COOKIE["user"]) && isset($_COOKIE["pass"])) { echo "checked"; } ?>> 
+                Remember me
+            </div>
+            
+            <input type="submit" value="Login" name="login">
+        </form>
+
+        <div class="message">
+            <?php
+                if (isset($_SESSION['message'])) {
+                    echo $_SESSION['message'];
+                    unset($_SESSION['message']);
+                }
+            ?>
+        </div>
+    </div>
+</body>
+</html>
+login.php
+<?php
+session_start();
+include('conn.php');
+
+if (isset($_POST['login'])) {
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+
+    // Using object-oriented MySQLi style
+    $stmt = $conn->prepare("SELECT * FROM `user` WHERE username = ? AND password = ?");
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 0) {
+        $_SESSION['message'] = "Login Failed. User not Found!";
+        header('Location: index.php');
+        exit();
+    } else {
+        $row = $result->fetch_assoc();
+
+        // Set cookies if remember me is checked
+        if (isset($_POST['remember'])) {
+            setcookie("user", $row['username'], time() + 60); 
+            setcookie("pass", $row['password'], time() + 60); 
+        }
+
+        $_SESSION['id'] = $row['userid'];
+        header('Location: success.php');
+        exit();
+    }
+} else {
+    $_SESSION['message'] = "Please Login!";
+    header('Location: index.php');
+    exit();
+}
+logout.php
+    <?php
+    	session_start();
+    	session_destroy();
+     
+    	if (isset($_COOKIE["user"]) AND isset($_COOKIE["pass"])){
+    		setcookie("user", '', time() - (3600));
+    		setcookie("pass", '', time() - (3600));
+    	}
+     
+    	header('location:index.php');
+     
+    ?>
+
+success.php
+<?php
+session_start();
+
+if (!isset($_SESSION['id']) || trim($_SESSION['id']) == '' || !isset($_COOKIE['user']) || !isset($_COOKIE['pass'])) {
+    session_destroy();
+    header('Location: index.php');
+    exit();
+}
+
+include('conn.php');
+
+// Use 'user' table and 'userid' column based on your new structure
+$query = mysqli_query($conn, "SELECT * FROM user WHERE userid='" . $_SESSION['id'] . "'");
+
+if (!$query || mysqli_num_rows($query) == 0) {
+    session_destroy();
+    header('Location: index.php');
+    exit();
+}
+
+$row = mysqli_fetch_assoc($query);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome, <?php echo htmlspecialchars($row['username']); ?>!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .user-info {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+        .logout-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #DC3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            background: #C82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login Successful 🎉</h2>
+        <p class="user-info">Welcome, <?php echo htmlspecialchars($row['username']); ?>!</p>
+        <a href="logout.php" class="logout-btn">Logout</a>
+    </div>
+</body>
+</html>
+
+
