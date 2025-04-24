@@ -62,3 +62,200 @@ yj7jygbfyhj7ygbfyj7ygbfytj7u6ioi8675wegarwae5yw64u7i8o9okyujgbdfvhj
 
 timetable
 
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TY Time Table</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>TY Time Table</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>8-9</th>
+                    <th>9-10</th>
+                    <th>9-10</th>
+                    <th>9-10</th>
+                    <th>9-10</th>
+                    <th>9-10</th>
+                    <th>9-10</th>
+                    <th>9-10</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Monday</td>
+                    <td>Web Development(SB)</td>
+                    <td>Web Development(SB)</td>
+
+                </tr>
+                <tr>
+                    <td>Monday</td>
+                    <td>Web Development(SB)</td>
+                    <td>Web Development(SB)</td>
+
+                </tr>               
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+style.css
+body{
+  font-family: 'Courier New', Courier, monospace;
+  margin: 80px;
+  background:white;
+}
+
+.container{
+  width: 8000px;
+  background: white;
+  border: 10px;
+  margin:0 auto;
+  padding: 16px;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+
+}
+.td,tr{
+  width: 800px;
+  background: wheat;
+  border: 10px;
+  margin:10px solid black;
+  padding: 16px;
+  border-radius: 6px solid black;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+
+}
+table{
+  width: 800px;
+  background: rgb(18, 18, 11);
+  border: 10px;
+  margin:10px solid black;
+  padding: 16px;
+  border-radius: 6px solid black;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+
+
+}
+
+train_timetable
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Railway Time Table</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Railway Time Table</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Train Name</th>
+                    <th>Train No</th>
+                    <th>Departure</th>
+                    <th>Arrival</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Day</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Rajdhani Express</td>
+                    <td>12301</td>
+                    <td>10:00 AM</td>
+                    <td>6:00 PM</td>
+                    <td>Mumbai</td>
+                    <td>Delhi</td>
+                    <td>Monday</td>
+                </tr>
+                <tr>
+                    <td>Shatabdi Express</td>
+                    <td>12001</td>
+                    <td>7:00 AM</td>
+                    <td>2:00 PM</td>
+                    <td>Pune</td>
+                    <td>Mumbai</td>
+                    <td>Tuesday</td>
+                </tr>
+                <tr>
+                    <td>Duronto Express</td>
+                    <td>12201</td>
+                    <td>5:30 PM</td>
+                    <td>8:30 AM</td>
+                    <td>Kolkata</td>
+                    <td>Chennai</td>
+                    <td>Wednesday</td>
+                </tr>
+                <tr>
+                    <td>Intercity Express</td>
+                    <td>12345</td>
+                    <td>6:00 AM</td>
+                    <td>10:00 AM</td>
+                    <td>Ahmedabad</td>
+                    <td>Surat</td>
+                    <td>Thursday</td>
+                </tr>
+                <tr>
+                    <td>Jan Shatabdi</td>
+                    <td>12071</td>
+                    <td>9:00 AM</td>
+                    <td>1:30 PM</td>
+                    <td>Bhopal</td>
+                    <td>Indore</td>
+                    <td>Friday</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+style.css
+body{
+    font-family: 'Courier New', Courier, monospace;
+    margin: 80px;
+    background:white;
+  }
+  
+  .container{
+    width: 8000px;
+    background: white;
+    border: 10px;
+    margin:0 auto;
+    padding: 16px;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  
+  }
+  .td,tr{
+    width: 800px;
+    background: wheat;
+    border: 10px;
+    margin:10px solid black;
+    padding: 16px;
+    border-radius: 6px solid black;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  
+  }
+  table{
+    width: 800px;
+    background: rgb(18, 18, 11);
+    border: 10px;
+    margin:10px solid black;
+    padding: 16px;
+    border-radius: 6px solid black;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  
+  
+  }
+
