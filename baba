@@ -259,4 +259,408 @@ body{
   
   }
 
-facebook_jsvalidation
+facebook_jsvalidation form level
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Facebook Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 360px;
+    }
+
+    h2 {
+      color: #1877f2;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .gender-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #155ab6;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Create Account</h2>
+  <form id="registrationForm" novalidate>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="name" onblur="validateName()" />
+      <div class="error" id="nameError"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" onblur="validateEmail()" />
+      <div class="error" id="emailError"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" onblur="validatePassword()" />
+      <div class="error" id="passwordError"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Gender</label>
+      <div class="gender-group">
+        <label><input type="radio" name="gender" value="Male" onchange="validateGender()" /> Male</label>
+        <label><input type="radio" name="gender" value="Female" onchange="validateGender()" /> Female</label>
+      </div>
+      <div class="error" id="genderError"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Date of Birth</label>
+      <input type="date" id="dob" onblur="validateDOB()" />
+      <div class="error" id="dobError"></div>
+    </div>
+
+    <button type="submit">Register</button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById("registrationForm");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const isValid =
+      validateName() &&
+      validateEmail() &&
+      validatePassword() &&
+      validateGender() &&
+      validateDOB();
+
+    if (isValid) {
+      alert("Registration Successful!");
+      form.reset();
+      document.querySelectorAll(".error").forEach(el => el.innerText = "");
+    }
+  });
+
+  function validateName() {
+    const name = document.getElementById("name").value.trim();
+    const nameError = document.getElementById("nameError");
+    if (name === "") {
+      nameError.innerText = "Name is required";
+      return false;
+    }
+    nameError.innerText = "";
+    return true;
+  }
+
+  function validateEmail() {
+    const email = document.getElementById("email").value.trim();
+    const emailError = document.getElementById("emailError");
+    const pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    if (email === "") {
+      emailError.innerText = "Email is required";
+      return false;
+    } else if (!pattern.test(email)) {
+      emailError.innerText = "Enter a valid email";
+      return false;
+    }
+    emailError.innerText = "";
+    return true;
+  }
+
+  function validatePassword() {
+    const password = document.getElementById("password").value;
+    const passwordError = document.getElementById("passwordError");
+    if (password.length < 6) {
+      passwordError.innerText = "Password must be at least 6 characters";
+      return false;
+    }
+    passwordError.innerText = "";
+    return true;
+  }
+
+  function validateGender() {
+    const gender = document.querySelector("input[name='gender']:checked");
+    const genderError = document.getElementById("genderError");
+    if (!gender) {
+      genderError.innerText = "Please select gender";
+      return false;
+    }
+    genderError.innerText = "";
+    return true;
+  }
+
+  function validateDOB() {
+    const dob = document.getElementById("dob").value;
+    const dobError = document.getElementById("dobError");
+    if (!dob) {
+      dobError.innerText = "Date of Birth is required";
+      return false;
+    }
+    dobError.innerText = "";
+    return true;
+  }
+</script>
+
+</body>
+</html>
+gmail_validation submitlevel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Facebook Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 360px;
+    }
+
+    h2 {
+      color: #1877f2;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .gender-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #155ab6;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Create Account</h2>
+  <form id="registrationForm" novalidate>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="name"  />
+      <div class="error" id="nameError"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" />
+      <div class="error" id="emailError"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" />
+      <div class="error" id="passwordError"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Gender</label>
+      <div class="gender-group">
+        <label><input type="radio" name="gender" value="Male"  /> Male</label>
+        <label><input type="radio" name="gender" value="Female" /> Female</label>
+      </div>
+      <div class="error" id="genderError"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Date of Birth</label>
+      <input type="date" id="dob" />
+      <div class="error" id="dobError"></div>
+    </div>
+
+    <button type="submit">Register</button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById("registrationForm");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const isValid =
+      validateName() &&
+      validateEmail() &&
+      validatePassword() &&
+      validateGender() &&
+      validateDOB();
+
+    if (isValid) {
+      alert("Registration Successful!");
+      form.reset();
+      document.querySelectorAll(".error").forEach(el => el.innerText = "");
+    }
+  });
+
+  function validateName() {
+    const name = document.getElementById("name").value.trim();
+    const nameError = document.getElementById("nameError");
+    if (name === "") {
+      nameError.innerText = "Name is required";
+      return false;
+    }
+    nameError.innerText = "";
+    return true;
+  }
+
+  function validateEmail() {
+    const email = document.getElementById("email").value.trim();
+    const emailError = document.getElementById("emailError");
+    const pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    if (email === "") {
+      emailError.innerText = "Email is required";
+      return false;
+    } else if (!pattern.test(email)) {
+      emailError.innerText = "Enter a valid email";
+      return false;
+    }
+    emailError.innerText = "";
+    return true;
+  }
+
+  function validatePassword() {
+    const password = document.getElementById("password").value;
+    const passwordError = document.getElementById("passwordError");
+    if (password.length < 6) {
+      passwordError.innerText = "Password must be at least 6 characters";
+      return false;
+    }
+    passwordError.innerText = "";
+    return true;
+  }
+
+  function validateGender() {
+    const gender = document.querySelector("input[name='gender']:checked");
+    const genderError = document.getElementById("genderError");
+    if (!gender) {
+      genderError.innerText = "Please select gender";
+      return false;
+    }
+    genderError.innerText = "";
+    return true;
+  }
+
+  function validateDOB() {
+    const dob = document.getElementById("dob").value;
+    const dobError = document.getElementById("dobError");
+    if (!dob) {
+      dobError.innerText = "Date of Birth is required";
+      return false;
+    }
+    dobError.innerText = "";
+    return true;
+  }
+</script>
+
+</body>
+</html>
+
+
+
