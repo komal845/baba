@@ -2516,3 +2516,1175 @@ views/index.erb
 </body>
 </html>
 
+complaint managmenet system
+admin.php
+<?php
+session_start();
+include "db.php";
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
+}
+$res = $conn->query("SELECT * FROM complaints ORDER BY id DESC");
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>All Complaints</h2>
+    <?php while ($row = $res->fetch_assoc()): ?>
+        <div class="card">
+            <p><strong>ID:</strong> <?= $row['id'] ?></p>
+            <p><strong>Name:</strong> <?= $row['name'] ?></p>
+            <p><strong>Subject:</strong> <?= $row['subject'] ?></p>
+            <p><strong>Status:</strong> <?= $row['status'] ?></p>
+            <div class="status-buttons">
+                <a href="update_status.php?id=<?= $row['id'] ?>&status=Pending"><button>Pending</button></a>
+                <a href="update_status.php?id=<?= $row['id'] ?>&status=In Progress"><button>In Progress</button></a>
+                <a href="update_status.php?id=<?= $row['id'] ?>&status=Resolved"><button>Resolved</button></a>
+            </div>
+        </div>
+    <?php endwhile; ?>
+</div>
+
+</body>
+</html>
+db.php
+<?php
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "complaint_system";
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+dbSetup
+CREATE DATABASE complaint_system;
+
+USE complaint_system;
+
+CREATE TABLE complaints (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    subject VARCHAR(255),
+    description TEXT,
+    status ENUM('Pending', 'In Progress', 'Resolved') DEFAULT 'Pending'
+);
+
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    password VARCHAR(255) -- Use hashed password ideally
+);
+
+INSERT INTO admin (username, password) VALUES ('admin', 'admin123'); -- change in prod
+index.php
+<?php include "db.php"; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complaint Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <a href="index.php">Home</a>
+    <a href="login.php">Admin Login</a>
+</header>
+
+<div class="container">
+    <h2>Welcome! Choose an option</h2>
+    <a href="submit_complaint.php"><button>Make a Complaint</button></a>
+    <a href="track_complaint.php"><button>Track Complaint</button></a>
+</div>
+
+</body>
+</html>
+login.php
+<?php include "db.php"; ?>
+<?php
+session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $user = $_POST['username'];
+    $pass = $_POST['password'];
+    
+    $stmt = $conn->prepare("SELECT * FROM admin WHERE username=? AND password=?");
+    $stmt->bind_param("ss", $user, $pass);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 1) {
+        $_SESSION['admin'] = true;
+        header("Location: admin.php");
+        exit();
+    } else {
+        echo "<script>alert('Invalid credentials');</script>";
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Admin Login</h2>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Admin Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+</body>
+</html>
+submit_complaint.php
+<?php include "db.php"; ?>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $subject = $_POST['subject'];
+    $desc = $_POST['description'];
+
+    $stmt = $conn->prepare("INSERT INTO complaints (name, email, subject, description) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $name, $email, $subject, $desc);
+    $stmt->execute();
+    echo "<script>alert('Complaint Submitted. Your Complaint ID is: $stmt->insert_id'); window.location='index.php';</script>";
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Complaint</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Make a Complaint</h2>
+    <form method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="subject" placeholder="Subject" required>
+        <textarea name="description" placeholder="Describe your complaint..." required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>
+track complaint.php
+<?php include "db.php"; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Track Complaint</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Track Complaint Status</h2>
+    <form method="GET">
+        <input type="number" name="id" placeholder="Enter Complaint ID" required>
+        <button type="submit">Track</button>
+    </form>
+
+    <?php
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        $res = $conn->query("SELECT * FROM complaints WHERE id = $id");
+        if ($res->num_rows > 0) {
+            $row = $res->fetch_assoc();
+            echo "<div class='card'>
+                    <p><strong>Subject:</strong> {$row['subject']}</p>
+                    <p><strong>Status:</strong> {$row['status']}</p>
+                  </div>";
+        } else {
+            echo "<p>No complaint found with that ID.</p>";
+        }
+    }
+    ?>
+</div>
+
+</body>
+</html>
+
+update_status.php
+
+<?php
+include "db.php";
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$id = $_GET['id'];
+$status = $_GET['status'];
+
+$conn->query("UPDATE complaints SET status='$status' WHERE id=$id");
+
+header("Location: admin.php");
+?>
+css/style.css
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
+
+header a {
+    color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+}
+
+button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.card {
+    background: #eee;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 6px;
+}
+
+.status-buttons button {
+    margin-right: 10px;
+}
+
+tolltax management system
+admin.php
+<?php session_start(); include "db.php";
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
+}
+$res = $conn->query("SELECT * FROM toll_records ORDER BY id DESC");
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>All Toll Records</h2>
+    <?php while ($row = $res->fetch_assoc()): ?>
+        <div class="card">
+            <p><strong>ID:</strong> <?= $row['id'] ?></p>
+            <p><strong>Name:</strong> <?= $row['name'] ?></p>
+            <p><strong>Vehicle:</strong> <?= $row['vehicle_number'] ?> (<?= $row['vehicle_type'] ?>)</p>
+            <p><strong>Toll:</strong> <?= $row['toll_location'] ?></p>
+            <p><strong>Amount:</strong> ₹<?= $row['amount'] ?></p>
+            <p><strong>Status:</strong> <?= $row['status'] ?></p>
+            <div class="status-buttons">
+                <a href="update_status.php?id=<?= $row['id'] ?>&status=Pending"><button>Pending</button></a>
+                <a href="update_status.php?id=<?= $row['id'] ?>&status=Paid"><button>Paid</button></a>
+                <a href="update_status.php?id=<?= $row['id'] ?>&status=Exempted"><button>Exempted</button></a>
+            </div>
+        </div>
+    <?php endwhile; ?>
+</div>
+</body>
+</html>
+check_status.php
+<?php include "db.php"; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Toll Payment</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Check Toll Payment Status</h2>
+    <form method="GET">
+        <input type="number" name="id" placeholder="Enter Receipt ID" required>
+        <button type="submit">Check</button>
+    </form>
+
+    <?php
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        $res = $conn->query("SELECT * FROM toll_records WHERE id = $id");
+        if ($res->num_rows > 0) {
+            $row = $res->fetch_assoc();
+            echo "<div class='card'>
+                    <p><strong>Vehicle No:</strong> {$row['vehicle_number']}</p>
+                    <p><strong>Toll Location:</strong> {$row['toll_location']}</p>
+                    <p><strong>Status:</strong> {$row['status']}</p>
+                  </div>";
+        } else {
+            echo "<p>No record found with that ID.</p>";
+        }
+    }
+    ?>
+</div>
+</body>
+</html>
+
+db.php
+<?php
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "toll_tax";
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+dbSetup
+CREATE DATABASE toll_tax;
+
+USE toll_tax;
+
+CREATE TABLE toll_records (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    vehicle_number VARCHAR(20),
+    vehicle_type VARCHAR(50),
+    toll_location VARCHAR(100),
+    amount DECIMAL(10,2),
+    status ENUM('Pending', 'Paid', 'Exempted') DEFAULT 'Pending'
+);
+
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    password VARCHAR(255)
+);
+
+INSERT INTO admin (username, password) VALUES ('admin', 'admin123');
+
+index.php
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toll Tax Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+    <a href="index.php">Home</a>
+    <a href="login.php">Admin Login</a>
+</header>
+
+<div class="container">
+    <h2>Welcome to Toll Booth</h2>
+    <a href="pay_toll.php"><button>Pay Toll Tax</button></a>
+    <a href="check_status.php"><button>Check Payment Status</button></a>
+</div>
+</body>
+</html>
+
+
+login.php
+<?php include "db.php"; session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $user = $_POST['username'];
+    $pass = $_POST['password'];
+    
+    $stmt = $conn->prepare("SELECT * FROM admin WHERE username=? AND password=?");
+    $stmt->bind_param("ss", $user, $pass);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 1) {
+        $_SESSION['admin'] = true;
+        header("Location: admin.php");
+        exit();
+    } else {
+        echo "<script>alert('Invalid credentials');</script>";
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Admin Login</h2>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Admin Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+</div>
+</body>
+</html>
+ pay_toll.php
+<?php include "db.php"; ?>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $vehicle_number = $_POST['vehicle_number'];
+    $vehicle_type = $_POST['vehicle_type'];
+    $location = $_POST['toll_location'];
+    $amount = $_POST['amount'];
+
+    $stmt = $conn->prepare("INSERT INTO toll_records (name, vehicle_number, vehicle_type, toll_location, amount) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssd", $name, $vehicle_number, $vehicle_type, $location, $amount);
+    $stmt->execute();
+    echo "<script>alert('Toll Payment Recorded. Your Receipt ID is: $stmt->insert_id'); window.location='index.php';</script>";
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pay Toll</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Pay Toll Tax</h2>
+    <form method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="text" name="vehicle_number" placeholder="Vehicle Number" required>
+        <input type="text" name="vehicle_type" placeholder="Vehicle Type (Car/Truck/etc.)" required>
+        <input type="text" name="toll_location" placeholder="Toll Location" required>
+        <input type="number" step="0.01" name="amount" placeholder="Amount" required>
+        <button type="submit">Pay Toll</button>
+    </form>
+</div>
+</body>
+</html>
+
+
+update_status.php
+<?php
+session_start();
+include "db.php";
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$id = $_GET['id'];
+$status = $_GET['status'];
+
+$conn->query("UPDATE toll_records SET status='$status' WHERE id=$id");
+
+header("Location: admin.php");
+?>
+css/style.css
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
+
+header a {
+    color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+}
+
+button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.card {
+    background: #eee;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 6px;
+}
+
+.status-buttons button {
+    margin-right: 10px;
+}
+
+pharmacy management
+
+admin.php
+<?php session_start(); include "db.php";
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
+}
+$res = $conn->query("SELECT o.*, m.name AS medname FROM orders o JOIN medicines m ON o.medicine_id = m.id ORDER BY o.id DESC");
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>All Orders</h2>
+    <?php while ($row = $res->fetch_assoc()): ?>
+        <div class="card">
+            <p><strong>Order ID:</strong> <?= $row['id'] ?></p>
+            <p><strong>Medicine:</strong> <?= $row['medname'] ?></p>
+            <p><strong>Customer:</strong> <?= $row['customer_name'] ?></p>
+            <p><strong>Qty:</strong> <?= $row['quantity'] ?></p>
+            <p><strong>Total:</strong> ₹<?= $row['total_price'] ?></p>
+            <p><strong>Status:</strong> <?= $row['status'] ?></p>
+            <div class="status-buttons">
+                <a href="update_order_status.php?id=<?= $row['id'] ?>&status=Pending"><button>Pending</button></a>
+                <a href="update_order_status.php?id=<?= $row['id'] ?>&status=Packed"><button>Packed</button></a>
+                <a href="update_order_status.php?id=<?= $row['id'] ?>&status=Dispatched"><button>Dispatched</button></a>
+                <a href="update_order_status.php?id=<?= $row['id'] ?>&status=Delivered"><button>Delivered</button></a>
+            </div>
+        </div>
+    <?php endwhile; ?>
+</div>
+</body>
+</html>
+
+buy_medicine.php
+<?php include "db.php"; ?>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $med_id = $_POST['medicine_id'];
+    $name = $_POST['customer_name'];
+    $quantity = $_POST['quantity'];
+
+    $med = $conn->query("SELECT * FROM medicines WHERE id = $med_id")->fetch_assoc();
+    if ($med['stock'] >= $quantity) {
+        $total = $med['price'] * $quantity;
+
+        $conn->query("INSERT INTO orders (medicine_id, customer_name, quantity, total_price) 
+                      VALUES ($med_id, '$name', $quantity, $total)");
+        $conn->query("UPDATE medicines SET stock = stock - $quantity WHERE id = $med_id");
+
+        $order_id = $conn->insert_id;
+        echo "<script>alert('Order placed successfully. Your Order ID is: $order_id'); window.location='index.php';</script>";
+    } else {
+        echo "<script>alert('Insufficient stock!');</script>";
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buy Medicine</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Buy Medicine</h2>
+    <form method="POST">
+        <input type="text" name="customer_name" placeholder="Your Name" required>
+        <select name="medicine_id" required>
+            <option value="">-- Select Medicine --</option>
+            <?php
+            $res = $conn->query("SELECT * FROM medicines WHERE stock > 0");
+            while ($row = $res->fetch_assoc()):
+                echo "<option value='{$row['id']}'>{$row['name']} (₹{$row['price']})</option>";
+            endwhile;
+            ?>
+        </select>
+        <input type="number" name="quantity" placeholder="Quantity" min="1" required>
+        <button type="submit">Place Order</button>
+    </form>
+</div>
+</body>
+</html>
+
+db.php
+<?php
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "probs";
+
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+dbSetup
+CREATE DATABASE pharmacy;
+
+USE pharmacy;
+
+CREATE TABLE medicines (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    price DECIMAL(10,2),
+    stock INT
+);
+
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    medicine_id INT,
+    customer_name VARCHAR(100),
+    quantity INT,
+    total_price DECIMAL(10,2),
+    status ENUM('Pending', 'Packed', 'Dispatched', 'Delivered') DEFAULT 'Pending',
+    FOREIGN KEY (medicine_id) REFERENCES medicines(id)
+);
+
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    password VARCHAR(255)
+);
+
+INSERT INTO admin (username, password) VALUES ('admin', 'admin123');
+INSERT INTO medicines (name, price, stock) VALUES 
+('Paracetamol', 20, 100),
+('Ibuprofen', 30, 80),
+('Amoxicillin', 50, 50);
+
+index.php
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pharmacy Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+    <a href="index.php">Home</a>
+    <a href="login.php">Admin Login</a>
+</header>
+
+<div class="container">
+    <h2>Welcome to Online Pharmacy</h2>
+    <a href="view_medicines.php"><button>View Medicines</button></a>
+    <a href="buy_medicine.php"><button>Buy Medicine</button></a>
+    <a href="track_order.php"><button>Track Order</button></a>
+</div>
+</body>
+</html>
+
+login.php
+<?php include "db.php"; session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $user = $_POST['username'];
+    $pass = $_POST['password'];
+    
+    $stmt = $conn->prepare("SELECT * FROM admin WHERE username=? AND password=?");
+    $stmt->bind_param("ss", $user, $pass);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 1) {
+        $_SESSION['admin'] = true;
+        header("Location: admin.php");
+        exit();
+    } else {
+        echo "<script>alert('Invalid credentials');</script>";
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Admin Login</h2>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Admin Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+</div>
+</body>
+</html>
+
+track_order.php
+<?php include "db.php"; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Track Order</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Track Your Order</h2>
+    <form method="GET">
+        <input type="number" name="id" placeholder="Enter Order ID" required>
+        <button type="submit">Track</button>
+    </form>
+
+    <?php
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        $res = $conn->query("SELECT o.*, m.name AS medname FROM orders o JOIN medicines m ON o.medicine_id = m.id WHERE o.id = $id");
+        if ($res->num_rows > 0) {
+            $row = $res->fetch_assoc();
+            echo "<div class='card'>
+                    <p><strong>Medicine:</strong> {$row['medname']}</p>
+                    <p><strong>Customer:</strong> {$row['customer_name']}</p>
+                    <p><strong>Quantity:</strong> {$row['quantity']}</p>
+                    <p><strong>Status:</strong> {$row['status']}</p>
+                  </div>";
+        } else {
+            echo "<p>No order found with that ID.</p>";
+        }
+    }
+    ?>
+</div>
+</body>
+</html>
+
+update_order.php
+<?php
+session_start();
+include "db.php";
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
+}
+$id = $_GET['id'];
+$status = $_GET['status'];
+$conn->query("UPDATE orders SET status='$status' WHERE id=$id");
+header("Location: admin.php");
+?>
+
+view_medicines.php
+<?php include "db.php"; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Medicines</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #1976d2;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Available Medicines</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Medicine Name</th>
+                <th>Price (₹)</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $res = $conn->query("SELECT * FROM medicines");
+            while ($row = $res->fetch_assoc()):
+            ?>
+            <tr>
+                <td><?= $row['name'] ?></td>
+                <td><?= $row['price']?></td>
+                <td><?= $row['stock'] ?></td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+
+css/index.css
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+  }
+  
+  /* Header */
+  header {
+    background: #1976d2;
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+  }
+  
+  header a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  header a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Container */
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Headings */
+  h2 {
+    margin-bottom: 25px;
+    color: #1976d2;
+  }
+  
+  /* Cards */
+  .card {
+    padding: 20px;
+    background: #f9f9f9;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border-left: 5px solid #1976d2;
+  }
+  
+  /* Form styles */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  input, select, button {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #1976d2;
+  }
+  
+  button {
+    background-color: #1976d2;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  button:hover {
+    background-color: #125ca1;
+  }
+  
+  /* Button layout */
+  .status-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .status-buttons a button {
+    padding: 5px 12px;
+    font-size: 14px;
+  }
+  
+  /* Responsive */
+  @media (max-width: 600px) {
+    .container {
+      padding: 15px;
+    }
+  
+    input, select, button {
+      font-size: 14px;
+    }
+  }
+
+college admission system
+
+admin.php
+<?php
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
+}
+include "db.php";
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>All Applications</h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Name</th><th>Email</th><th>Course</th><th>Marks</th><th>Status</th><th>Actions</th>
+        </tr>
+        <?php
+        $res = $conn->query("SELECT * FROM admissions");
+        while ($row = $res->fetch_assoc()) {
+            echo "<tr>
+                <td>{$row['id']}</td><td>{$row['name']}</td><td>{$row['email']}</td>
+                <td>{$row['course']}</td><td>{$row['marks']}%</td><td>{$row['status']}</td>
+                <td>
+                    <a href='update_status.php?id={$row['id']}&status=Accepted'><button>Accept</button></a>
+                    <a href='update_status.php?id={$row['id']}&status=Rejected'><button>Reject</button></a>
+                </td>
+            </tr>";
+        }
+        ?>
+    </table>
+</div>
+</body>
+</html>
+apply.php
+<?php include "db.php"; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apply for Admission</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Admission Form</h2>
+    <form method="POST">
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="email" name="email" placeholder="Email ID" required>
+        <input type="text" name="phone" placeholder="Phone Number" required>
+        <input type="text" name="course" placeholder="Course Applied" required>
+        <input type="number" name="marks" placeholder="12th Marks (%)" required>
+        <button type="submit" name="submit">Submit</button>
+    </form>
+    <?php
+    if (isset($_POST['submit'])) {
+        $stmt = $conn->prepare("INSERT INTO admissions(name, email, phone, course, marks, status) VALUES (?, ?, ?, ?, ?, 'Pending')");
+        $stmt->bind_param("ssssi", $_POST['name'], $_POST['email'], $_POST['phone'], $_POST['course'], $_POST['marks']);
+        $stmt->execute();
+        echo "<p>Application submitted! Your Application ID is: " . $stmt->insert_id . "</p>";
+    }
+    ?>
+</div>
+</body>
+</html>
+
+db.php
+<?php
+$conn = new mysqli("localhost", "root", "", "probs");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+dbSetup
+CREATE TABLE admissions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    course VARCHAR(100),
+    marks INT,
+    status VARCHAR(20)
+);
+
+index.php
+<?php include "db.php"; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College Admission</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+    <a href="index.php">Home</a>
+    <a href="login.php">Login</a>
+</header>
+<div class="container">
+    <h2>Welcome to College Admission Portal</h2>
+    <a href="apply.php"><button>Apply for Admission</button></a>
+    <a href="status.php"><button>Check Admission Status</button></a>
+</div>
+</body>
+</html>
+
+login.php
+<?php
+session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_POST['username'] === 'admin' && $_POST['password'] === 'admin123') {
+        $_SESSION['admin'] = true;
+        header("Location: admin.php");
+        exit();
+    } else {
+        $error = "Invalid credentials";
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Admin Login</h2>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <?php if (!empty($error)) echo "<p>$error</p>"; ?>
+</div>
+</body>
+</html>
+
+status.php
+<?php include "db.php"; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Admission Status</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Track Your Admission</h2>
+    <form method="POST">
+        <input type="number" name="id" placeholder="Enter Application ID" required>
+        <button type="submit" name="track">Track</button>
+    </form>
+    <?php
+    if (isset($_POST['track'])) {
+        $id = $_POST['id'];
+        $res = $conn->query("SELECT * FROM admissions WHERE id = $id");
+        if ($res->num_rows > 0) {
+            $row = $res->fetch_assoc();
+            echo "<p><strong>Status:</strong> " . $row['status'] . "</p>";
+        } else {
+            echo "<p>No application found with this ID.</p>";
+        }
+    }
+    ?>
+</div>
+</body>
+</html>
+
+update_status.php
+
+<?php
+include "db.php";
+$id = $_GET['id'];
+$status = $_GET['status'];
+$conn->query("UPDATE admissions SET status='$status' WHERE id=$id");
+header("Location: admin.php");
+$conn->close();
+?>
+
+
+
+
+
+
+
+
+
+
+
+
