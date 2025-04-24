@@ -3678,6 +3678,221 @@ $conn->close();
 ?>
 
 
+grocery management system
+
+addToCart.php
+<?php
+session_start();
+$id = $_POST['product_id'];
+if (!isset($_SESSION['cart'])) {
+  $_SESSION['cart'] = [];
+}
+if (!in_array($id, $_SESSION['cart'])) {
+  $_SESSION['cart'][] = $id;
+}
+header("Location: index.php");
+
+cart.php
+<?php
+include 'db.php';
+session_start();
+$cart = $_SESSION['cart'] ?? [];
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Your Cart</h1>
+<?php
+if (empty($cart)) {
+  echo "<p>Cart is empty</p>";
+} else {
+  $ids = implode(',', $cart);
+  $result = $conn->query("SELECT * FROM products WHERE id IN ($ids)");
+  while ($row = $result->fetch_assoc()) {
+    echo "<div class='cartitem'>";
+    echo "<h2>" . $row['name'] . "</h2>";
+    echo "<p>$" . $row['price'] . "</p>";
+    echo "<form action='removeFromCart.php' method='post'>
+            <input type='hidden' name='product_id' value='" . $row['id'] . "'>
+            <button type='submit'>Remove</button>
+          </form>";
+    echo "</div>";
+  }
+}
+?>
+<a href="index.php">Continue Shopping</a>
+</body>
+</html>
+
+db.php
+<?php
+$conn = new mysqli("localhost", "root", "", "probs");
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+dbSetup
+CREATE DATABASE IF NOT EXISTS ubercart;
+USE ubercart;
+
+CREATE TABLE products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  price DECIMAL(10,2),
+  image VARCHAR(255)
+);
+
+INSERT INTO products (name, price, image) VALUES
+('Product A', 10.99, 'img1.jpg'),
+('Product B', 15.49, 'img2.jpg'),
+('Product C', 8.75, 'img3.jpg');
+
+index.php
+<?php
+include 'db.php';
+session_start();
+$result = $conn->query("SELECT * FROM products");
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ubercart - Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Ubercart - Product Listing</h1>
+<div class="products">
+  <?php while ($row = $result->fetch_assoc()) { ?>
+    <div class="product">
+      <img src="img/<?= $row['image'] ?>" alt="<?= $row['name'] ?>">
+      <h2><?= $row['name'] ?></h2>
+      <p>Price: $<?= $row['price'] ?></p>
+      <form method="post" action="addToCart.php">
+        <input type="hidden" name="product_id" value="<?= $row['id'] ?>">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+  <?php } ?>
+</div>
+<a href="cart.php">Go to Cart</a>
+</body>
+</html>
+
+removeFromCart.php
+<?php
+session_start();
+$id = $_POST['product_id'];
+$_SESSION['cart'] = array_diff($_SESSION['cart'], [$id]);
+header("Location: cart.php");
+
+style.css
+
+/* Global Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f1f3f6;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+h1 {
+  background-color: #2b6777;
+  color: white;
+  padding: 20px 0;
+  margin: 0;
+  font-size: 2.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Grid */
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Product Card */
+.product {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.product:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+
+.product img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product h2 {
+  font-size: 1.2rem;
+  margin: 15px 10px 10px;
+}
+
+.product p {
+  font-weight: bold;
+  color: #2b6777;
+  margin: 0 10px 10px;
+}
+
+/* Add to Cart Button */
+.product form {
+  margin: 0 10px 15px;
+}
+
+button {
+  background-color: #52ab98;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #3e8e7e;
+}
+
+/* Cart Link */
+a[href="cart.php"] {
+  display: inline-block;
+  margin: 20px auto 40px;
+  text-align: center;
+  font-size: 1.1rem;
+  text-decoration: none;
+  background-color: #2b6777;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+a[href="cart.php"]:hover {
+  background-color: #1e4d5a;
+}
+
+
 
 
 
