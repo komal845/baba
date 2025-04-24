@@ -4266,6 +4266,106 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 }
 
 
+book fetch
+
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Catalogue</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        function loadBooks() {
+            fetch("fetch_books.php")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("book-list").innerHTML = data;
+            });
+        }
+
+        window.onload = loadBooks;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Book Catalogue</h2>
+        <p>Below is a list of available books in our library. You can browse them and get more details.</p>
+        <div id="book-list">
+            <!-- Books will load here dynamically -->
+        </div>
+    </div>
+</body>
+</html>
+
+fetch_books.php
+<?php
+include 'db.php';
+
+echo "<div class='grid'>";
+
+$result = $conn->query("SELECT * FROM books WHERE available = 1");
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        echo "<div class='book-card'>
+                <h3>" . htmlspecialchars($row['title']) . "</h3>
+                <p><strong>Author:</strong> " . htmlspecialchars($row['author']) . "</p>
+                <p><strong>Price:</strong> ₹" . htmlspecialchars($row['price']) . "</p>
+                <p><strong>Available:</strong> " . ($row['available'] ? 'Yes' : 'No') . "</p>
+              </div>";
+    }
+} else {
+    echo "<p>No books found in the database.</p>";
+}
+
+echo "</div>";
+$conn->close();
+?>
+db.php
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$database = "book_db";
+
+$conn = new mysqli($host, $user, $password, $database);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+bookcatalogue
+CREATE DATABASE book_db;
+USE book_db;
+
+-- Users table (optional)
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+
+-- Books table
+CREATE TABLE books (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
+    author VARCHAR(100),
+    price DECIMAL(6,2),
+    available BOOLEAN DEFAULT 1
+);
+
+-- Sample data
+INSERT INTO books (title, author, price, available) VALUES
+('Atomic Habits', 'James Clear', 299.00, 1),
+('The Alchemist', 'Paulo Coelho', 249.00, 1),
+('Clean Code', 'Robert Martin', 399.00, 1),
+('Wings of Fire', 'A.P.J Abdul Kalam', 199.00, 1),
+('Think Like a Monk', 'Jay Shetty', 279.00, 1),
+('Rich Dad Poor Dad', 'Robert Kiyosaki', 199.00, 1),
+('Zero to One', 'Peter Thiel', 299.00, 1),
+('The Power of Now', 'Eckhart Tolle', 349.00, 1);
+
+
 
 
 
