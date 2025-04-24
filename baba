@@ -4788,6 +4788,62 @@ contact.html
 </body>
 </html>
 
+notification popup
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notification Popup</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<button onclick="showNotification()">Send Notification</button>
+
+<!-- Notification container -->
+<div id="notification" class="notification">
+  ✅ Email sent successfully!
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+style.css
+.notification {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #28a745;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 16px;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  font-size: 16px;
+  z-index: 999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: opacity 0.5s ease, bottom 0.5s ease;
+  opacity: 0;
+}
+
+.notification.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50px;
+}
+
+script.js
+function showNotification() {
+  const toast = document.getElementById("notification");
+  toast.classList.add("show");
+
+  // Hide after 3 seconds
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
 
 
 
