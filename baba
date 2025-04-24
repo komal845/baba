@@ -1295,6 +1295,46 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #1558c0;
 }
+results.php
+<?php
+class Shape {
+    public function area($a, $b = 0) {
+        return 0;
+    }
+}
+
+class Triangle extends Shape {
+    public function area($a, $b) {
+        return 0.5 * $a * $b;
+    }
+}
+
+class Square extends Shape {
+    public function area($a, $b = 0) {
+        return $a * $a;
+    }
+}
+
+class Circle extends Shape {
+    public function area($a, $b = 0) {
+        return 3.14 * $a * $a;
+    }
+}
+
+$a = $_GET['a'] ?? 0;
+$b = $_GET['b'] ?? 0;
+$op = $_GET['op'] ?? null;
+
+switch ($op) {
+    case '1': $shape = new Triangle(); $name = "Triangle"; break;
+    case '2': $shape = new Square();   $name = "Square";   break;
+    case '3': $shape = new Circle();   $name = "Circle";   break;
+    default:  die("Invalid shape selected.");
+}
+
+echo "<h2>Area of $name: " . $shape->area($a, $b) . "</h2>";
+echo "<a href='index.html'>Go Back</a>";
+?>
 
 xml xsd
 students.xml
