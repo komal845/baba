@@ -1638,4 +1638,95 @@ function calculate() {
     document.getElementById("lifetime").innerHTML = `Hey, you are approximately <span class="highlight">${ageInWeeks}</span> weeks old.`;
     document.getElementById("nameInfo").innerHTML = `Thank you for using the app, <span class="highlight">${name}</span>!`;
   }
+
+cookie
+
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Set Cookie</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Enter Your Name</h2>
+    <form action="cookie.php" method="post">
+        <input type="text" name="username" placeholder="Enter your name" required>
+        <input type="submit" value="Set Cookie">
+    </form>
+</div>
+
+</body>
+</html>
+style.css
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    text-align: center;
+    padding: 40px;
+}
+
+.container {
+    max-width: 400px;
+    background: white;
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input[type="text"],
+input[type="submit"] {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+cookie.php
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST["username"];
+    setcookie("user", $username, time() + (86400 * 7)); // 7 days
+    header("Location: cookie.php");
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PHP Cookie Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>PHP Cookie Result</h2>
+    <?php
+    if (isset($_COOKIE["user"])) {
+        echo "<p>Welcome back, <strong>" . htmlspecialchars($_COOKIE["user"]) . "</strong>!</p>";
+    } else {
+        echo "<p>No cookie found. Go to <a href='index.html'>Set Cookie</a>.</p>";
+    }
+    ?>
+</div>
+
+</body>
+</html>
+
   
