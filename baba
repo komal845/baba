@@ -1295,3 +1295,54 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #1558c0;
 }
+
+xml xsd
+students.xml
+<?xml version="1.0"?>
+<students 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="students.xsd">
+
+    <student>
+        <name>Alice</name>
+        <rollno>1</rollno>
+        <marks>90</marks>
+    </student>
+
+    <student>
+        <name>Bob</name>
+        <rollno>2</rollno>
+        <marks>85</marks>
+    </student>
+
+    <student>
+        <name>Charlie</name>
+        <rollno>3</rollno>
+        <marks>88</marks>
+    </student>
+
+</students>
+
+students.xsd
+
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="students">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="student" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="name" type="xs:string"/>
+              <xs:element name="rollno" type="xs:integer"/>
+              <xs:element name="marks" type="xs:integer"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
+
