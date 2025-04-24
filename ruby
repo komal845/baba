@@ -19,3 +19,7 @@ message = Mail.new do
 end
 
 message.deliver!
+
+shell
+gem install mail
+ruby main.rb
