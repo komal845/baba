@@ -1386,3 +1386,256 @@ students.xsd
 
 </xs:schema>
 
+calculator
+
+calc.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="calstyle.css">
+</head>
+<body>
+    <div class="calci">
+        <form name="calculator">
+            <input type="text" name="display" id="display" disabled>
+        </form>
+        <div class="con1">
+            <button onclick="appendValue('9')">9</button>
+            <button onclick="appendValue('8')">8</button>
+            <button onclick="appendValue('7')">7</button>
+            <button onclick="appendValue('+')">+</button>
+        </div>
+        <div class="con2">
+            <button onclick="appendValue('6')">6</button>
+            <button onclick="appendValue('5')">5</button>
+            <button onclick="appendValue('4')">4</button>
+            <button onclick="appendValue('-')">-</button>
+        </div>
+        <div class="con3">
+            <button onclick="appendValue('3')">3</button>
+            <button onclick="appendValue('2')">2</button>
+            <button onclick="appendValue('1')">1</button>
+            <button onclick="appendValue('/')">/</button>
+        </div>
+        <div class="con4">
+            <button onclick="appendValue('.')">.</button>
+            <button onclick="appendValue('0')">0</button>
+            <button onclick="deleteLast()">B</button>
+            <button onclick="appendValue('*')">*</button>
+        </div>
+        <div class="con5">
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+clac.css
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.calci {
+    background-color:rgb(255, 238, 173);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 20px;
+    font-size: 24px;
+    text-align: right;
+    border: none;
+    background-color: #f7f7f7;
+    margin-bottom: 10px;
+}
+
+
+button {
+    padding: 20px;
+    font-size: 20px;
+    background-color: rgb(150, 206, 180);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #ddd;
+}
+
+button:active {
+    background-color: #ccc;
+}
+
+.con1, .con2, .con3, .con4, .con5 {
+    display: flex;
+    gap:4px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.con5 {
+    display: flex;
+    justify-content: space-between;
+}
+clas.js
+function appendValue(value) {
+    document.calculator.display.value += value;
+}
+
+function calculate() {
+    try {
+        document.calculator.display.value = eval(document.calculator.display.value);
+    } catch (error) {
+        document.calculator.display.value = 'Error';
+    }
+}
+
+function clearDisplay() {
+    document.calculator.display.value = '';
+}
+
+function deleteLast() {
+    const displayValue = document.calculator.display.value;
+    document.calculator.display.value = displayValue.substring(0, displayValue.length - 1);
+}
+human lifetime
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Weeks</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #f7f8fa, #d2e0fb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #444;
+      margin-bottom: 1rem;
+    }
+
+    input {
+      padding: 0.5rem;
+      width: 80%;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+
+    .info {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .highlight {
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Welcome!</h1>
+
+    <input type="text" id="name" placeholder="Enter your name" required />
+    <input type="number" id="age" placeholder="Enter your age" required />
+    <br />
+    <button onclick="calculate()">Submit</button>
+
+    <div class="info" id="greeting"></div>
+    <div class="info" id="lifetime"></div>
+    <div class="info" id="nameInfo"></div>
+
+    <footer>&copy; 2025 | Fun with JavaScript</footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+script.js 
+function calculate() {
+    const name = document.getElementById("name").value.trim();
+    const age = parseInt(document.getElementById("age").value.trim());
+  
+    if (!name || isNaN(age) || age <= 0) {
+      alert("Please enter a valid name and age.");
+      return;
+    }
+  
+    // Greeting based on time
+    const hour = new Date().getHours();
+    let greeting = "";
+  
+    if (hour < 12) {
+      greeting = "Good Morning 🌅";
+    } else if (hour < 18) {
+      greeting = "Good Afternoon ☀️";
+    } else {
+      greeting = "Good Evening 🌙";
+    }
+  
+    // Calculate age in weeks
+    const ageInWeeks = age * 52;
+  
+    // Display results
+    document.getElementById("greeting").innerHTML = `<span class="highlight">${greeting}</span>`;
+    document.getElementById("lifetime").innerHTML = `Hey, you are approximately <span class="highlight">${ageInWeeks}</span> weeks old.`;
+    document.getElementById("nameInfo").innerHTML = `Thank you for using the app, <span class="highlight">${name}</span>!`;
+  }
+  
