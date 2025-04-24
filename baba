@@ -2260,3 +2260,122 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #0056b3;
 }
+sorted number
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant Data Entry</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="activity.js" defer></script>
+</head>
+<body>
+<div class="container">
+    <h2>Restaurant Entry Form</h2>
+    <form id="restaurantForm">
+        <table>
+            <tr>
+                <td>Restaurant Name:</td>
+                <td><input type="text" id="name" name="name" required></td>
+            </tr>
+            <tr>
+                <td>Owner Name:</td>
+                <td><input type="text" id="owner" name="owner" required></td>
+            </tr>
+            <tr>
+                <td>Location:</td>
+                <td><input type="text" id="location" name="location" required></td>
+            </tr>
+            <tr>
+                <td>Contact Number:</td>
+                <td><input type="text" id="contact" name="contact" required></td>
+            </tr>
+            <tr>
+                <td>Cuisine Type:</td>
+                <td><input type="text" id="cuisine" name="cuisine" required></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Submit Entry"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
+style.css
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f1f5f9;
+    text-align: center;
+    padding: 40px;
+}
+
+.container {
+    background-color: white;
+    width: 500px;
+    margin: auto;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+}
+
+table {
+    width: 100%;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+input[type="text"], input[type="submit"] {
+    width: 95%;
+    padding: 8px;
+    font-size: 16px;
+}
+
+input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+activity.js
+class ActivityHandler {
+    constructor(formId) {
+        this.form = document.getElementById(formId);
+        this.inputs = this.form.querySelectorAll("input[type='text']");
+
+        this.inputs.forEach(input => {
+            input.addEventListener("focus", () => this.onFocus(input));
+            input.addEventListener("blur", () => this.onBlur(input));
+        });
+
+        this.form.addEventListener("submit", (e) => this.onSubmit(e));
+    }
+
+    onFocus(input) {
+        input.style.backgroundColor = "#e0f7fa";
+    }
+
+    onBlur(input) {
+        input.style.backgroundColor = "";
+    }
+
+    onSubmit(event) {
+        event.preventDefault();
+        alert("Restaurant data submitted successfully!");
+        this.form.reset();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    new ActivityHandler("restaurantForm");
+});
