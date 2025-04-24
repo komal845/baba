@@ -980,4 +980,161 @@ fibonachi
         }
     </script>
 </body>
+</html
+signup page display name after login
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Form</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 360px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .checkbox-group label {
+      display: inline-block;
+      margin-right: 10px;
+      font-weight: normal;
+    }
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #155ab6;
+    }
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e9f5ff;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Registration Form</h2>
+    <form id="regForm">
+      <div class="form-group">
+        <label for="fname">First Name</label>
+        <input type="text" id="fname">
+        <div class="error" id="fnameError"></div>
+      </div>
+      <div class="form-group">
+        <label for="lname">Last Name</label>
+        <input type="text" id="lname">
+        <div class="error" id="lnameError"></div>
+      </div>
+      <div class="form-group">
+        <label for="org">Organization</label>
+        <input type="text" id="org">
+        <div class="error" id="orgError"></div>
+      </div>
+      <div class="form-group">
+        <label>Hobbies</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="hobbies" value="Reading"> Reading</label>
+          <label><input type="checkbox" name="hobbies" value="Traveling"> Traveling</label>
+          <label><input type="checkbox" name="hobbies" value="Gaming"> Gaming</label>
+        </div>
+        <div class="error" id="hobbiesError"></div>
+      </div>
+      <button type="submit">Register</button>
+    </form>
+
+    <div id="output" class="output"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("regForm");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Gather values
+      const fname = document.getElementById("fname").value.trim();
+      const lname = document.getElementById("lname").value.trim();
+      const org   = document.getElementById("org").value.trim();
+      const hobbies = Array.from(
+        document.querySelectorAll("input[name='hobbies']:checked")
+      ).map(cb => cb.value);
+
+      // Validation
+      const errs = {
+        fnameError:    fname  ? "" : "First name is required",
+        lnameError:    lname  ? "" : "Last name is required",
+        orgError:      org    ? "" : "Organization is required",
+        hobbiesError:  hobbies.length ? "" : "Select at least one hobby"
+      };
+
+      // Show errors
+      for (let id in errs) {
+        document.getElementById(id).innerText = errs[id];
+      }
+
+      // If any error, stop
+      if (Object.values(errs).some(msg => msg !== "")) {
+        return;
+      }
+
+      // Display details
+      document.getElementById("output").innerHTML = `
+        <h3>Registration Details</h3>
+        <p><strong>First Name:</strong> ${fname}</p>
+        <p><strong>Last Name:</strong> ${lname}</p>
+        <p><strong>Organization:</strong> ${org}</p>
+        <p><strong>Hobbies:</strong> ${hobbies.join(", ")}</p>
+      `;
+
+      // Reset form
+      form.reset();
+    });
+  </script>
+
+</body>
 </html>
+
