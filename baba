@@ -4470,8 +4470,323 @@ verify-code.html
 </body>
 </html>
 
+ruby for email authentication
+📤 Ruby Script to Send Email Using Gmail SMTP
+ruby
+Copy
+Edit
+# main.rb
+
+require 'mail'
+
+# Set up SMTP settings
+Mail.defaults do
+  delivery_method :smtp, {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    user_name:            'your_email@gmail.com',        # 👈 your Gmail address
+    password:             'your_app_password_here',      # 👈 your generated app password
+    authentication:       :login,
+    enable_starttls_auto: true
+  }
+end
+
+# Define the email message
+message = Mail.new do
+  from    'your_email@gmail.com'       # 👈 same as user_name above
+  to      'receiver@example.com'       # 👈 receiver's email
+  subject 'Hello from Ruby!'
+  body    'This is a test email sent from a Ruby script using Gmail SMTP.'
+end
+
+# Send the email
+message.deliver!
+
+puts "✅ Email sent successfully!"
+✅ Steps to Set Up Gmail (to use in script)
+🔐 1. Enable 2-Step Verification (if not already enabled):
+Go to: https://myaccount.google.com
+
+Click "Security" on the left.
+
+Under "Signing in to Google", enable 2-Step Verification.
+
+🔑 2. Create an App Password
+In the Security section, search “App Passwords” or go to: https://myaccount.google.com/apppasswords
+
+Select App: Mail, Device: Other (Custom name) → enter something like “RubyScript”
+
+Click Generate
+
+Copy the 16-character app password (no spaces)
+
+🔐 IMPORTANT: This is your "email password" for the Ruby script — not your actual Gmail password!
+
+💻 Running the Script
+🧪 Option 1: On Replit
+Go to https://replit.com
+
+Click Create Repl
+
+Choose "Ruby" as the language
+
+Paste the full script into main.rb
+
+Open the Shell tab and run:
+
+css
+Copy
+Edit
+gem install mail
+ruby main.rb
+🧪 Option 2: Locally on Your Computer
+Make sure you have Ruby installed (ruby -v)
+
+Create a file called main.rb and paste the script above
+
+Open terminal and run:
+
+bash
+Copy
+Edit
+gem install mail
+ruby main.rb
+✅ Recap of Full Steps
+
+Step	Action
+1	Enable 2-Step Verification on your Gmail
+2	Generate an App Password
+3	Paste password in Ruby script
+4	Replace sender & receiver emails
+5	Install mail gem (gem install mail)
+6	Run script using ruby main.rb
+7	✅ Done — Email sent!
 
 
+
+3 page website html and bootstrap
+
+products.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Garment Shop - Products</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    img{
+      width: 200px;
+      height: 200px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Garment Shop</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Product Grid -->
+  <section class="container my-5">
+    <div class="row">
+      <!-- Product Card -->
+      <div class="col-md-4 mb-4" >
+        <div class="card">
+          <img src="../img/img1.jpg" class="card-img-top" alt="Product 1" />
+          <div class="card-body">
+            <h5 class="card-title">T-Shirt</h5>
+            <p class="card-text">₹499</p>
+            <a href="#" class="btn btn-success">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+      <!-- Repeat Product Cards -->
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="../img/img2.jpg" class="card-img-top" alt="Product 2" />
+          <div class="card-body">
+            <h5 class="card-title">Jeans</h5>
+            <p class="card-text">₹999</p>
+            <a href="#" class="btn btn-success">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="../img/img2.jpg" class="card-img-top" alt="Product 3" />
+          <div class="card-body">
+            <h5 class="card-title">Dress</h5>
+            <p class="card-text">₹1499</p>
+            <a href="#" class="btn btn-success">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Product Card -->
+      <div class="col-md-4 mb-4" >
+        <div class="card">
+          <img src="../img/img2.jpg" class="card-img-top" alt="Product 1" />
+          <div class="card-body">
+            <h5 class="card-title">T-Shirt</h5>
+            <p class="card-text">₹499</p>
+            <a href="#" class="btn btn-success">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Repeat Product Cards -->
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="../img/img2.jpg" class="card-img-top" alt="Product 2" />
+          <div class="card-body">
+            <h5 class="card-title">Jeans</h5>
+            <p class="card-text">₹999</p>
+            <a href="#" class="btn btn-success">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="../img/img2.jpg" class="card-img-top" alt="Product 3" />
+          <div class="card-body">
+            <h5 class="card-title">Dress</h5>
+            <p class="card-text">₹1499</p>
+            <a href="#" class="btn btn-success">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-dark text-white text-center py-3">&copy; 2025 Garment Shop</footer>
+</body>
+</html>
+
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Garment Shop - Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    img{
+      width:200px;
+      height: 200px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Garment Shop</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="bg-light py-5 text-center">
+    <div class="container">
+      <h1>Welcome to the Trendiest Garment Store!</h1>
+      <p class="lead">Shop the latest fashion at unbeatable prices.</p>
+      <a href="products.html" class="btn btn-primary">Shop Now</a>
+    </div>
+  </header>
+
+  <!-- Categories -->
+  <section class="container my-5">
+    <div class="row text-center">
+      <div class="col-md-4 my-2">
+        <img src="../img/img1.jpg" class="mb-2" alt="Men" />
+        <h5>Men's Wear</h5>
+      </div>
+      <div class="col-md-4 my-2">
+        <img src="../img/img2.jpg" class="mb-2" alt="Women" />
+        <h5>Women's Wear</h5>
+      </div>
+      <div class="col-md-4 my-2">
+        <img src="../img/img3.jpg" class="mb-2" alt="Kids" />
+        <h5>Kids' Wear</h5>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="bg-dark text-white text-center py-3">&copy; 2025 Garment Shop</footer>
+</body>
+</html>
+
+contact.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Garment Shop - Contact</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">Garment Shop</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contact Form -->
+  <section class="container my-5">
+    <h2 class="text-center mb-4">Contact Us</h2>
+    <form>
+      <div class="mb-3">
+        <label for="name" class="form-label">Your Name</label>
+        <input type="text" class="form-control" id="name" required />
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Your Email</label>
+        <input type="email" class="form-control" id="email"required />
+      </div>
+      <div class="mb-3">
+        <label for="message" class="form-label">Your Message</label>
+        <textarea class="form-control" id="message" rows="4" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+  </section>
+
+  <footer class="bg-dark text-white text-center py-3">&copy; 2025 Garment Shop</footer>
+</body>
+</html>
 
 
 
