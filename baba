@@ -4366,6 +4366,110 @@ INSERT INTO books (title, author, price, available) VALUES
 ('The Power of Now', 'Eckhart Tolle', 349.00, 1);
 
 
+email verification code match rejex
+
+check-code.php
+<?php
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $entered = $_POST['code'];
+    $actual = $_SESSION['code'] ?? '';
+
+    if ($entered == $actual) {
+        echo "<h2>Email Verified Successfully ✅</h2>";
+        echo "<p>Email: " . $_SESSION['email'] . "</p>";
+    } else {
+        echo "<h2>Invalid Code ❌</h2>";
+        echo "<a href='verify-code.html'>Try Again</a>";
+    }
+}
+?>
+enter-email.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Verification</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Email Verification</h2>
+    <form action="send-code.php" method="post">
+        <input type="email" name="email" placeholder="Enter your email" required>
+        <input type="submit" value="Send Verification Code">
+    </form>
+</div>
+</body>
+</html>
+
+send-code.php
+<?php
+session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $_SESSION['email'] = $_POST['email'];
+    $_SESSION['code'] = rand(1000, 9999);  // Random 4-digit code
+    // "Send" the code (simulated)
+    header("Location: verify-code.html");  // Go to frontend input
+    exit;
+}
+?>
+
+style.css
+body {
+    font-family: Arial;
+    background-color: #f0f4f8;
+    text-align: center;
+    padding: 50px;
+}
+
+.container {
+    background-color: #fff;
+    width: 400px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+verify-code.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Code</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Enter Verification Code</h2>
+    <form action="check-code.php" method="post">
+        <input type="text" name="code" placeholder="Enter code" required>
+        <input type="submit" value="Verify">
+    </form>
+</div>
+</body>
+</html>
+
 
 
 
