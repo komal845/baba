@@ -1207,3 +1207,91 @@ h2 {
     justify-content: center;
 }
 
+inhertance 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shape Area Calculator</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <form method="get" action="result.php">
+        <center>
+            <h2>Shape Area Calculator</h2>
+            <table>
+                <tr>
+                    <td>Enter First Value (base/radius/side):</td>
+                    <td><input type="text" name="a" required></td>
+                </tr>
+                <tr>
+                    <td>Enter Second Value (height for triangle):</td>
+                    <td><input type="text" name="b"></td>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="op" value="1" required> Triangle</td>
+                    <td><input type="radio" name="op" value="2"> Square</td>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="op" value="3"> Circle</td>
+                    <td><input type="submit" value="Calculate Area"></td>
+                </tr>
+            </table>
+        </center>
+    </form>
+</body>
+</html>
+style.css
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 30px;
+}
+
+form {
+    background-color: white;
+    width: 400px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+td {
+    padding: 8px;
+}
+
+input[type="text"] {
+    width: 95%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #1558c0;
+}
